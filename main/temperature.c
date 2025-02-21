@@ -1,18 +1,17 @@
 #include "temperature.h"
+#include "storage.h"
 
 static MAX6675 thermocouple_top(PIN_MAX6675_TOP_SCK, PIN_MAX6675_TOP_CS, PIN_MAX6675_TOP_SO);
 static MAX6675 thermocouple_bottom(PIN_MAX6675_BOTTOM_SCK, PIN_MAX6675_BOTTOM_CS, PIN_MAX6675_BOTTOM_SO);
 
-static float temp_correction_top = 0.0;
-static float temp_correction_bottom = 0.0;
+extern float temp_correction_top;
+extern float temp_correction_bottom;
 
 void temperature_init(void) {
     gpio_set_direction(PIN_RELAY_TOP, GPIO_MODE_OUTPUT);
     gpio_set_direction(PIN_RELAY_BOTTOM, GPIO_MODE_OUTPUT);
     gpio_set_direction(PIN_RELAY_LIGHT, GPIO_MODE_OUTPUT);
     gpio_set_direction(PIN_RELAY_FAN, GPIO_MODE_OUTPUT);
-
-    load_temp_correction(&temp_correction_top, &temp_correction_bottom);
 }
 
 float read_temperature(int sensor) {
@@ -27,15 +26,15 @@ float read_temperature(int sensor) {
 
 void control_temperature(OvenState *state) {
     float avg_temp = (state->current_temp_top + state->current_temp_bottom) / 2;
-    float temp_diff = abs(state->current_temp_top - state->current_temp_bottom);
+    float temp_diff = fabsf(state->current_temp_top - state->current_temp_bottom);
 
     switch (state->mode) {
         case MODE_SAUSAGE:
             // В режиме колбасы важно поддерживать равномерную температуру
             // и не превышать целевую температуру в продукте
             if (state->current_temp_bottom < state->target_temp) {
-                // Если разница температур большая, включаем оба нагревателя
                 if (temp_diff > 5.0) {
+                    // Если разница температур большая, включаем оба нагревателя
                     state->heater_top = true;
                     state->heater_bottom = true;
                 } else {
@@ -53,7 +52,6 @@ void control_temperature(OvenState *state) {
 
         case MODE_BAKING:
             // В режиме выпечки поддерживаем среднюю температуру
-            // и используем оба нагревателя
             if (avg_temp < state->target_temp) {
                 if (avg_temp < state->target_temp - 20) {
                     // Быстрый нагрев
@@ -69,7 +67,7 @@ void control_temperature(OvenState *state) {
             } else {
                 state->heater_top = false;
                 state->heater_bottom = false;
-                state->fan = false;
+                state->fan = (avg_temp < state->target_temp + 5);
             }
             break;
 
@@ -82,7 +80,7 @@ void control_temperature(OvenState *state) {
             } else {
                 state->heater_top = false;
                 state->heater_bottom = false;
-                state->fan = false;
+                state->fan = (avg_temp < state->target_temp + 2);
             }
             break;
 

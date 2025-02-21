@@ -1,6 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Добавляем в начало списка include
+#include "VoiceControl.h"
+
 // GPIO pins configuration
 #define PIN_MAX6675_TOP_SCK     18
 #define PIN_MAX6675_TOP_CS      5
@@ -46,7 +49,7 @@
 #define DEFAULT_MQTT_PORT       8883
 #define DEFAULT_MQTT_USER       "***"
 #define DEFAULT_MQTT_PASS       "***"
-#define DEFAULT_MQTT_TOPIC      "ZOven"
+#define DEFAULT_MQTT_TOPIC      "ZOмen"
 
 // Task priorities
 #define TASK_PRIORITY_MENU      5
@@ -92,6 +95,16 @@ typedef struct {
     char mqtt_password[MAX_MQTT_PASS_LENGTH];
     char mqtt_topic[MAX_MQTT_TOPIC_LENGTH];
     int timezone;
+    bool voice_control_enabled;  // Включено ли голосовое управление
 } OvenState;
+
+// Добавляем после определения структуры
+// Голосовые команды
+#define VOICE_CMD_STOP      "стоп"
+#define VOICE_CMD_START     "старт"
+#define VOICE_CMD_LIGHT     "свет"
+#define VOICE_CMD_MODE      "режим"
+#define VOICE_CMD_TEMP_UP   "теплее"
+#define VOICE_CMD_TEMP_DOWN "холоднее"
 
 #endif
