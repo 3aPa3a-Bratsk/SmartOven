@@ -42,11 +42,11 @@
 #define TIME_MAX_BAKE            180  // 3 часа
 
 // Default network settings
-#define DEFAULT_MQTT_SERVER     "bratsk-service.ru"
+#define DEFAULT_MQTT_SERVER     "***"
 #define DEFAULT_MQTT_PORT       8883
-#define DEFAULT_MQTT_USER       "smarthome"
-#define DEFAULT_MQTT_PASS       "Matrix666!"
-#define DEFAULT_MQTT_TOPIC      "ZOwen"
+#define DEFAULT_MQTT_USER       "***"
+#define DEFAULT_MQTT_PASS       "***"
+#define DEFAULT_MQTT_TOPIC      "ZOven"
 
 // Task priorities
 #define TASK_PRIORITY_MENU      5
