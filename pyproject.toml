@@ -1,0 +1,13 @@
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "cryptography>=44.0.1",
+    "esptool>=4.8.1",
+    "future>=1.0.0",
+    "kconfiglib>=14.1.0",
+    "pyparsing>=3.2.1",
+    "pyserial>=3.5",
+]
